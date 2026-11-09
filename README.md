@@ -33,6 +33,14 @@ python3 tools/dump_kernel.py
 - `/tmp/Image` — сырой исполняемый бинарник ядра Linux ARM64 (`ARMd`, ~14.3 MB).
 - `/tmp/boot_decrypted.img` — стандартный Android `boot.img` v0 (с gzip-ядром и встроенным DTB), полностью совместимый с **Carliv Image Kitchen**, `unpackbootimg` и `abootimg`.
 
+## Проверенный запуск кастомных ядер через Fastboot
+
+Проверено на живом устройстве:
+```sh
+fastboot boot boot_decrypted.img
+```
+U-Boot Fastboot в обработчике команды `boot` (`cb_boot` @ `0x01070238`) парсит стандартный заголовок `ANDROID!`, вызывает `bootm 0x02080000` и **не требует цифровой подписи AMLSECU** при запуске из оперативной памяти! Система успешно стартует и поднимает ADB за 26 секунд.
+
 ## Реверс-инжиниринг U-Boot Fastboot unlock (`check_lock`)
 
 В U-Boot 2015 команды Fastboot (`flash`, `erase`, `getvar unlocked`) управляются функцией `check_lock` (`0x0106ff14`):
